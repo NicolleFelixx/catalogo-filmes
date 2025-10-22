@@ -1,0 +1,86 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>➕ Novo Filme</h1>
+      <%= link_to "← Voltar", movies_path, class: "btn btn-outline-secondary" %>
+    </div>
+
+    <!-- Card com o formulário -->
+    <div class="card shadow">
+      <div class="card-body">
+        
+        <%= form_with(model: @movie, local: true) do |f| %>
+          
+          <!-- Exibir erros de validação -->
+          <% if @movie.errors.any? %>
+            <div class="alert alert-danger">
+              <h5><%= pluralize(@movie.errors.count, "erro") %> impediram o cadastro:</h5>
+              <ul class="mb-0">
+                <% @movie.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- Campo: Título -->
+          <div class="mb-3">
+            <%= f.label :title, "Título do Filme *", class: "form-label" %>
+            <%= f.text_field :title, class: "form-control", 
+                placeholder: "Ex: O Poderoso Chefão", 
+                autofocus: true %>
+          </div>
+
+          <!-- Campo: Sinopse -->
+          <div class="mb-3">
+            <%= f.label :synopsis, "Sinopse *", class: "form-label" %>
+            <%= f.text_area :synopsis, rows: 5, class: "form-control", 
+                placeholder: "Descreva a história do filme..." %>
+            <div class="form-text">Conte um pouco sobre o enredo do filme.</div>
+          </div>
+
+          <!-- Linha com 3 campos -->
+          <div class="row">
+            
+            <!-- Campo: Ano de Lançamento -->
+            <div class="col-md-4 mb-3">
+              <%= f.label :release_year, "Ano de Lançamento *", class: "form-label" %>
+              <%= f.number_field :release_year, class: "form-control", 
+                  placeholder: "2024", 
+                  min: 1900, 
+                  max: 2100 %>
+            </div>
+
+            <!-- Campo: Duração -->
+            <div class="col-md-4 mb-3">
+              <%= f.label :duration, "Duração (minutos) *", class: "form-label" %>
+              <%= f.number_field :duration, class: "form-control", 
+                  placeholder: "120", 
+                  min: 1 %>
+            </div>
+
+            <!-- Campo: Diretor -->
+            <div class="col-md-4 mb-3">
+              <%= f.label :director, "Diretor *", class: "form-label" %>
+              <%= f.text_field :director, class: "form-control", 
+                  placeholder: "Steven Spielberg" %>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+            <%= link_to "Cancelar", movies_path, class: "btn btn-secondary" %>
+            <%= f.submit "💾 Cadastrar Filme", class: "btn btn-primary" %>
+          </div>
+
+        <% end %>
+
+      </div>
+    </div>
+
+    <p class="text-muted mt-3"><small>* Campos obrigatórios</small></p>
+
+  </div>
+</div>

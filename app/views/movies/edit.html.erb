@@ -1,0 +1,76 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1>✏️ Editar Filme</h1>
+      <%= link_to "← Voltar", @movie, class: "btn btn-outline-secondary" %>
+    </div>
+
+    <!-- Card com o formulário -->
+    <div class="card shadow">
+      <div class="card-body">
+        
+        <%= form_with(model: @movie, local: true) do |f| %>
+          
+          <!-- Exibir erros de validação -->
+          <% if @movie.errors.any? %>
+            <div class="alert alert-danger">
+              <h5><%= pluralize(@movie.errors.count, "erro") %> impediram a atualização:</h5>
+              <ul class="mb-0">
+                <% @movie.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- Campo: Título -->
+          <div class="mb-3">
+            <%= f.label :title, "Título do Filme *", class: "form-label" %>
+            <%= f.text_field :title, class: "form-control", autofocus: true %>
+          </div>
+
+          <!-- Campo: Sinopse -->
+          <div class="mb-3">
+            <%= f.label :synopsis, "Sinopse *", class: "form-label" %>
+            <%= f.text_area :synopsis, rows: 5, class: "form-control" %>
+          </div>
+
+          <!-- Linha com 3 campos -->
+          <div class="row">
+            
+            <!-- Campo: Ano de Lançamento -->
+            <div class="col-md-4 mb-3">
+              <%= f.label :release_year, "Ano de Lançamento *", class: "form-label" %>
+              <%= f.number_field :release_year, class: "form-control", min: 1900, max: 2100 %>
+            </div>
+
+            <!-- Campo: Duração -->
+            <div class="col-md-4 mb-3">
+              <%= f.label :duration, "Duração (minutos) *", class: "form-label" %>
+              <%= f.number_field :duration, class: "form-control", min: 1 %>
+            </div>
+
+            <!-- Campo: Diretor -->
+            <div class="col-md-4 mb-3">
+              <%= f.label :director, "Diretor *", class: "form-label" %>
+              <%= f.text_field :director, class: "form-control" %>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+            <%= link_to "Cancelar", @movie, class: "btn btn-secondary" %>
+            <%= f.submit "💾 Atualizar Filme", class: "btn btn-primary" %>
+          </div>
+
+        <% end %>
+
+      </div>
+    </div>
+
+    <p class="text-muted mt-3"><small>* Campos obrigatórios</small></p>
+
+  </div>
+</div>
