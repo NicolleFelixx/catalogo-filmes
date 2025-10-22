@@ -11,21 +11,69 @@
   </head>
 
   <body>
-    <!-- Mensagens de notificação -->
-    <% if notice %>
-      <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <%= notice %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <%= link_to "🎬 Catálogo de Filmes", root_path, class: "navbar-brand" %>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <%= link_to "Filmes", movies_path, class: "nav-link" %>
+            </li>
+            
+            <% if user_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "Novo Filme", new_movie_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Meu Perfil", edit_user_registration_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "btn btn-outline-light btn-sm ms-2" %>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to "Entrar", new_user_session_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Cadastrar", new_user_registration_path, class: "btn btn-primary btn-sm ms-2" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
       </div>
-    <% end %>
-    
-    <% if alert %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= alert %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    <% end %>
+    </nav>
 
-    <%= yield %>
+    <!-- Mensagens Flash -->
+    <div class="container mt-3">
+      <% if notice %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= notice %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% end %>
+      
+      <% if alert %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= alert %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="container my-4">
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+      <p class="mb-0">© 2025 Catálogo de Filmes - Desafio Técnico Mainô</p>
+    </footer>
   </body>
 </html>

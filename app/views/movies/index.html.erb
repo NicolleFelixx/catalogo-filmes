@@ -1,2 +1,55 @@
-<h1>Movies#index</h1>
-<p>Find me in app/views/movies/index.html.erb</p>
+<div class="row mb-4">
+  <div class="col-md-8">
+    <h1>🎬 Catálogo de Filmes</h1>
+    <p class="text-muted">Explore nossa coleção de filmes</p>
+  </div>
+  <div class="col-md-4 text-end">
+    <% if user_signed_in? %>
+      <%= link_to "➕ Adicionar Filme", new_movie_path, class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Grade de Filmes -->
+<div class="row g-4">
+  <% if @movies.any? %>
+    <% @movies.each do |movie| %>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title"><%= movie.title %></h5>
+            <p class="text-muted small">
+              <strong>Diretor:</strong> <%= movie.director %><br>
+              <strong>Ano:</strong> <%= movie.release_year %><br>
+              <strong>Duração:</strong> <%= movie.duration %> min
+            </p>
+            <p class="card-text">
+              <%= truncate(movie.synopsis, length: 100) %>
+            </p>
+          </div>
+          <div class="card-footer bg-transparent border-top-0">
+            <%= link_to "Ver detalhes", movie_path(movie), class: "btn btn-sm btn-outline-primary w-100" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="col-12">
+      <div class="alert alert-info text-center">
+        <h4>📽️ Nenhum filme cadastrado ainda</h4>
+        <% if user_signed_in? %>
+          <p>Seja o primeiro a adicionar um filme!</p>
+          <%= link_to "Adicionar Filme", new_movie_path, class: "btn btn-primary mt-2" %>
+        <% else %>
+          <p>Faça login para adicionar filmes.</p>
+          <%= link_to "Entrar", new_user_session_path, class: "btn btn-primary mt-2" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Paginação -->
+<div class="d-flex justify-content-center mt-5">
+  <%= paginate @movies %>
+</div>
