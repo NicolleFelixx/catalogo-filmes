@@ -1,3 +1,14 @@
+<% if @movie.poster.attached? %>
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <%= image_tag @movie.poster, 
+          class: "img-fluid rounded shadow", 
+          style: "max-height: 500px; max-width: 100%; object-fit: contain;",
+          alt: @movie.title %>
+    </div>
+  </div>
+<% end %>
+
 <!-- Cabeçalho do Filme -->
 <div class="row mb-4">
   <div class="col">

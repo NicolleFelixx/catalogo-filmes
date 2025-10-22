@@ -14,25 +14,43 @@
 <div class="row g-4">
   <% if @movies.any? %>
     <% @movies.each do |movie| %>
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title"><%= movie.title %></h5>
-            <p class="text-muted small">
-              <strong>Diretor:</strong> <%= movie.director %><br>
-              <strong>Ano:</strong> <%= movie.release_year %><br>
-              <strong>Duração:</strong> <%= movie.duration %> min
-            </p>
-            <p class="card-text">
-              <%= truncate(movie.synopsis, length: 100) %>
-            </p>
-          </div>
-          <div class="card-footer bg-transparent border-top-0">
-            <%= link_to "Ver detalhes", movie_path(movie), class: "btn btn-sm btn-outline-primary w-100" %>
-          </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      
+      <!-- ═══════════════════════════════════════════ -->
+      <!-- BLOCO NOVO: Imagem do Poster -->
+      <!-- ═══════════════════════════════════════════ -->
+      <% if movie.poster.attached? %>
+        <%= image_tag movie.poster, 
+            class: "card-img-top", 
+            style: "height: 300px; object-fit: cover;",
+            alt: movie.title %>
+      <% else %>
+        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+             style="height: 300px;">
+          <span class="text-white fs-1">🎬</span>
         </div>
+      <% end %>
+      <!-- ═══════════════════════════════════════════ -->
+      
+      <div class="card-body">
+        <h5 class="card-title"><%= movie.title %></h5>
+        <p class="text-muted small">
+          <strong>Diretor:</strong> <%= movie.director %><br>
+          <strong>Ano:</strong> <%= movie.release_year %><br>
+          <strong>Duração:</strong> <%= movie.duration %> min
+        </p>
+        <p class="card-text">
+          <%= truncate(movie.synopsis, length: 100) %>
+        </p>
       </div>
-    <% end %>
+      <div class="card-footer bg-transparent border-top-0">
+        <%= link_to "Ver detalhes", movie_path(movie), class: "btn btn-sm btn-outline-primary w-100" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
   <% else %>
     <div class="col-12">
       <div class="alert alert-info text-center">

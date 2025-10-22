@@ -69,6 +69,18 @@
             </div>
           </div>
 
+          <!-- Campo: Poster (Imagem) - NOVO! -->
+          <div class="mb-3">
+            <%= f.label :poster, "Poster do Filme (Opcional)", class: "form-label" %>
+            <%= f.file_field :poster, class: "form-control", accept: "image/*" %>
+            <div class="form-text">
+              Formatos aceitos: JPG, PNG, GIF. Tamanho máximo: 5MB.
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+
           <!-- Botões -->
           <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
             <%= link_to "Cancelar", movies_path, class: "btn btn-secondary" %>

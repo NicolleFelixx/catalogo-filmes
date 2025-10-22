@@ -1,4 +1,5 @@
 class Movie < ApplicationRecord
+   has_one_attached :poster
   # Relações
   belongs_to :user
   has_many :comments, dependent: :destroy
