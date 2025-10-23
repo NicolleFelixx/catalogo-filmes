@@ -52,6 +52,46 @@ class MoviesController < ApplicationController
     redirect_to movies_url, notice: 'Filme excluído com sucesso!'
   end
 
+  # GET /movies/search_ai
+# GET /movies/search_ai
+def search_ai
+  title = params[:title]
+  
+  if title.blank?
+    render json: { error: 'Título não pode estar vazio' }, status: :unprocessable_entity
+    return
+  end
+  
+  begin
+    result = MovieAiService.fetch_movie_data(title)
+    
+    # Verificar se houve erro relacionado a sobrecarga
+    if result[:error]
+      error_msg = result[:error].to_s.downcase
+      
+      if error_msg.include?('overloaded') || error_msg.include?('503')
+        render json: { 
+          error: '🤖 A IA está temporariamente sobrecarregada. Aguarde alguns minutos e tente novamente, ou preencha os campos manualmente.' 
+        }
+      elsif error_msg.include?('timeout')
+        render json: {
+          error: '⏱️ A busca está demorando muito. Tente novamente ou preencha manualmente.'
+        }
+      else
+        render json: result
+      end
+    else
+      render json: result
+    end
+    
+  rescue => e
+    Rails.logger.error("❌ Erro no search_ai: #{e.message}")
+    render json: { 
+      error: 'Serviço temporariamente indisponível. Por favor, preencha os campos manualmente.' 
+    }
+  end
+end
+
   private
 
   def set_movie

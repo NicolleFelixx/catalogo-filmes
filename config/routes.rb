@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   
   # Rotas dos filmes (área pública e autenticada)
   resources :movies do
+    get :search_ai, on: :collection
     resources :comments, only: [:create]
   end
   

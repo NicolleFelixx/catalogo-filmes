@@ -38,3 +38,6 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+# Ignorar arquivo com API keys
+/config/initializers/gemini.rb

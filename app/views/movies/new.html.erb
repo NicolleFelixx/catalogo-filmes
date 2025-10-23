@@ -12,9 +12,44 @@
       <div class="card-body">
         
         <%= form_with(model: @movie, local: true) do |f| %>
-          
-          <!-- Exibir erros de validação -->
-          <% if @movie.errors.any? %>
+        
+  
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- BUSCA COM IA - NOVO! -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="alert alert-info">
+    <h6 class="mb-3">🤖 Busca Inteligente</h6>
+    <p class="small mb-3">Digite o título do filme e clique em "Buscar na IA" para preencher os dados automaticamente!</p>
+    
+    <div class="input-group">
+      <input 
+        type="text" 
+        id="ai-search-input" 
+        class="form-control" 
+        placeholder="Ex: Matrix, Inception, Avatar..."
+        value="">
+      <button 
+        type="button" 
+        id="ai-search-btn" 
+        class="btn btn-primary">
+        🔍 Buscar na IA
+      </button>
+    </div>
+    
+    <div id="ai-loading" class="mt-2" style="display: none;">
+      <small class="text-muted">
+        ⏳ Buscando informações... aguarde 10-15 segundos...
+      </small>
+    </div>
+    
+    <div id="ai-error" class="alert alert-danger mt-2" style="display: none;"></div>
+    <div id="ai-success" class="alert alert-success mt-2" style="display: none;"></div>
+  </div>
+  <!-- ═══════════════════════════════════════════ -->
+  
+  <!-- Exibir erros de validação -->
+  <% if @movie.errors.any? %>
+  
             <div class="alert alert-danger">
               <h5><%= pluralize(@movie.errors.count, "erro") %> impediram o cadastro:</h5>
               <ul class="mb-0">
@@ -80,14 +115,82 @@
 
           <!-- Botões -->
           <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-
-          <!-- Botões -->
-          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
             <%= link_to "Cancelar", movies_path, class: "btn btn-secondary" %>
             <%= f.submit "💾 Cadastrar Filme", class: "btn btn-primary" %>
           </div>
 
         <% end %>
+
+        <!-- Script para busca com IA -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('ai-search-input');
+  const searchBtn = document.getElementById('ai-search-btn');
+  const loadingDiv = document.getElementById('ai-loading');
+  const errorDiv = document.getElementById('ai-error');
+  const successDiv = document.getElementById('ai-success');
+  
+  searchBtn.addEventListener('click', async function() {
+    const title = searchInput.value.trim();
+    
+    // Validação
+    if (!title) {
+      errorDiv.textContent = 'Por favor, digite o título do filme.';
+      errorDiv.style.display = 'block';
+      successDiv.style.display = 'none';
+      return;
+    }
+    
+    // Limpar mensagens anteriores
+    errorDiv.style.display = 'none';
+    successDiv.style.display = 'none';
+    loadingDiv.style.display = 'block';
+    searchBtn.disabled = true;
+    
+    try {
+      // Fazer requisição para a API
+      const response = await fetch(`/movies/search_ai?title=${encodeURIComponent(title)}`);
+      const data = await response.json();
+      
+      loadingDiv.style.display = 'none';
+      searchBtn.disabled = false;
+      
+      if (data.error) {
+        // Se deu erro
+        errorDiv.textContent = data.error;
+        errorDiv.style.display = 'block';
+      } else {
+        // Sucesso! Preencher campos
+        document.getElementById('movie_title').value = title;
+        document.getElementById('movie_synopsis').value = data.synopsis;
+        document.getElementById('movie_release_year').value = data.release_year;
+        document.getElementById('movie_duration').value = data.duration;
+        document.getElementById('movie_director').value = data.director;
+        
+        // Mostrar mensagem de sucesso
+        successDiv.textContent = '✅ Dados preenchidos com sucesso! Você pode editar antes de salvar.';
+        successDiv.style.display = 'block';
+        
+        // Scroll suave até o título
+        document.getElementById('movie_title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } catch (error) {
+      loadingDiv.style.display = 'none';
+      searchBtn.disabled = false;
+      errorDiv.textContent = 'Erro ao conectar com o servidor. Tente novamente.';
+      errorDiv.style.display = 'block';
+    }
+  });
+  
+  // Permitir buscar com Enter
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchBtn.click();
+    }
+  });
+});
+</script>
 
       </div>
     </div>
