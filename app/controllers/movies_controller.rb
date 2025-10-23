@@ -4,12 +4,27 @@ class MoviesController < ApplicationController
   before_action :authorize_movie, only: [:edit, :update, :destroy]
 
   # GET /movies (página pública)
-  def index
-    @movies = Movie.includes(:user)
-                   .ordered_by_newest
-                   .page(params[:page])
-                   .per(6)
+ def index
+  @movies = Movie.includes(:user, :categories).ordered_by_newest
+  
+  # Filtro por categoria
+  if params[:category_id].present?
+    @movies = @movies.joins(:categories).where(categories: { id: params[:category_id] })
+    @selected_category = Category.find(params[:category_id])
   end
+  
+  # Busca por título, diretor ou ano
+  if params[:search].present?
+    search_term = "%#{params[:search]}%"
+    @movies = @movies.where(
+      "title ILIKE ? OR director ILIKE ? OR CAST(release_year AS TEXT) LIKE ?",
+      search_term, search_term, params[:search]
+    )
+  end
+  
+  @movies = @movies.distinct.page(params[:page]).per(6)
+  @categories = Category.ordered_by_name
+end
 
   # GET /movies/:id (página pública)
   def show
@@ -19,32 +34,36 @@ class MoviesController < ApplicationController
 
   # GET /movies/new (apenas autenticado)
   def new
-    @movie = Movie.new
-  end
+  @movie = Movie.new
+  @categories = Category.ordered_by_name
+end
 
-  # POST /movies (apenas autenticado)
   def create
-    @movie = current_user.movies.build(movie_params)
-    
-    if @movie.save
-      redirect_to @movie, notice: 'Filme cadastrado com sucesso!'
-    else
-      render :new, status: :unprocessable_entity
-    end
+  @movie = Movie.new(movie_params)
+  @movie.user = current_user
+  
+  if @movie.save
+    redirect_to @movie, notice: 'Filme cadastrado com sucesso!'
+  else
+    @categories = Category.ordered_by_name  # ← ADICIONE ESTA LINHA
+    render :new, status: :unprocessable_entity
   end
+end
 
   # GET /movies/:id/edit (apenas dono)
   def edit
-  end
+  @categories = Category.ordered_by_name  # ← ADICIONE ESTA LINHA
+end
 
   # PATCH/PUT /movies/:id (apenas dono)
   def update
-    if @movie.update(movie_params)
-      redirect_to @movie, notice: 'Filme atualizado com sucesso!'
-    else
-      render :edit, status: :unprocessable_entity
-    end
+  if @movie.update(movie_params)
+    redirect_to @movie, notice: 'Filme atualizado com sucesso!'
+  else
+    @categories = Category.ordered_by_name  # ← ADICIONE ESTA LINHA
+    render :edit, status: :unprocessable_entity
   end
+end
 
   # DELETE /movies/:id (apenas dono)
   def destroy
@@ -105,6 +124,6 @@ end
   end
 
   def movie_params
-    params.require(:movie).permit(:title, :synopsis, :release_year, :duration, :director, :poster)
+    params.require(:movie).permit(:title, :synopsis, :release_year, :duration, :director, :poster, category_ids: [])
   end
 end

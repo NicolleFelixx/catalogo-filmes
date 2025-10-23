@@ -12,6 +12,7 @@
 
   <body>
     <!-- Navbar -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <%= link_to "🎬 Catálogo de Filmes", root_path, class: "navbar-brand" %>
@@ -21,6 +22,45 @@
         </button>
         
         <div class="collapse navbar-collapse" id="navbarNav">
+          
+          <!-- FORMULÁRIO DE BUSCA - NOVO! -->
+          <form class="d-flex mx-auto my-2 my-lg-0" action="<%= movies_path %>" method="get">
+            <input 
+              class="form-control me-2" 
+              type="search" 
+              name="search" 
+              placeholder="Buscar filmes..." 
+              value="<%= params[:search] %>"
+              style="width: 300px;">
+            <button class="btn btn-outline-light" type="submit">🔍 Buscar</button>
+          </form>
+          
+          <!-- DROPDOWN DE CATEGORIAS - NOVO! -->
+          <div class="dropdown ms-2 my-2 my-lg-0">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              📂 Categorias
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="categoryDropdown">
+              <li>
+                <%= link_to movies_path, class: "dropdown-item" do %>
+                  <strong>Todas as Categorias</strong>
+                  <span class="badge bg-secondary float-end"><%= Movie.count %></span>
+                <% end %>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <% if @categories.present? %>
+                <% @categories.each do |category| %>
+                  <li>
+                    <%= link_to movies_path(category_id: category.id), class: "dropdown-item" do %>
+                      <%= category.name %>
+                      <span class="badge bg-primary float-end"><%= category.movies.count %></span>
+                    <% end %>
+                  </li>
+                <% end %>
+              <% end %>
+            </ul>
+          </div>
+          
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
               <%= link_to "Filmes", movies_path, class: "nav-link" %>
@@ -72,8 +112,13 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5">
+      <footer class="bg-dark text-white text-center py-3 mt-5">
       <p class="mb-0">© 2025 Catálogo de Filmes - Desafio Técnico Mainô</p>
+    </footer>
+    
+    <!-- Bootstrap JavaScript - ADICIONE AQUI ↓ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     </footer>
   </body>
 </html>

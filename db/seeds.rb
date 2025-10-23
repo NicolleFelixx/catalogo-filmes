@@ -132,7 +132,44 @@ puts "   💬 Comentários: #{Comment.count}"
 puts ""
 puts "🔑 Credenciais de teste:"
 puts "   Email: admin@example.com"
-puts "   Senha: 123456"# This file should ensure the existence of records required to run the application in every environment (production,
+puts "   Senha: 123456"
+# Categorias
+puts "Criando categorias..."
+
+categories = [
+  "Ação",
+  "Aventura",
+  "Comédia",
+  "Drama",
+  "Ficção Científica",
+  "Terror",
+  "Romance",
+  "Suspense",
+  "Animação",
+  "Documentário",
+  "Musical",
+  "Fantasia"
+]
+
+categories.each do |category_name|
+  Category.find_or_create_by!(name: category_name)
+end
+
+puts "✅ #{Category.count} categorias criadas!"
+
+# Associar categorias aos filmes existentes
+puts "Associando categorias aos filmes..."
+
+if Movie.exists?
+  Movie.all.each do |movie|
+    # Adiciona 2-3 categorias aleatórias para cada filme
+    random_categories = Category.all.sample(rand(2..3))
+    movie.categories << random_categories unless movie.categories.any?
+  end
+  puts "✅ Categorias associadas aos filmes!"
+end
+
+puts "\n🎉 Seeds concluídos!"# This file should ensure the existence of records required to run the application in every environment (production,
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 #

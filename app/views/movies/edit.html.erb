@@ -58,6 +58,27 @@
               <%= f.text_field :director, class: "form-control" %>
             </div>
           </div>
+
+          div class="mb-3">
+                <%= f.label :category_ids, "Categorias", class: "form-label" %>
+                <div class="form-text mb-2">Selecione uma ou mais categorias para o filme:</div>
+                
+                <div class="row">
+                  <% @categories.each do |category| %>
+                    <div class="col-md-4 col-6">
+                      <div class="form-check">
+                        <%= f.check_box :category_ids, 
+                            { multiple: true, checked: @movie.category_ids.include?(category.id), class: "form-check-input" }, 
+                            category.id, 
+                            nil %>
+                        <%= f.label "category_ids_#{category.id}", category.name, class: "form-check-label" %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+
+          
                <!-- Campo: Poster (Imagem) - NOVO! -->
           <div class="mb-3">
             <%= f.label :poster, "Poster do Filme (Opcional)", class: "form-label" %>
