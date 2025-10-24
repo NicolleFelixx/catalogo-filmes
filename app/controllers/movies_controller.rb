@@ -73,7 +73,7 @@ end
 
   # GET /movies/search_ai
 # GET /movies/search_ai
-def search_ai
+def fetch_ai_data
   title = params[:title]
   
   if title.blank?
