@@ -5,7 +5,7 @@ require 'httparty'
 class MovieAiService
   include HTTParty
   
-  API_KEY = GEMINI_API_KEY
+  API_KEY = ENV['GEMINI_API_KEY']
   BASE_URI = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent"
 
   def self.fetch_movie_data(title)
@@ -50,19 +50,23 @@ class MovieAiService
 
   def self.make_api_request(prompt)
     url = "#{BASE_URI}?key=#{API_KEY}"
-    
-    body = {
-      contents: [{
-        parts: [{
-          text: prompt
-        }]
-      }],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 1000
-      }
+     body = {
+    contents: [{
+      parts: [{
+        text: prompt
+      }]
+    }],
+    generationConfig: {
+      temperature: 0.3,
+      maxOutputTokens: 1000
     }
-    
+  }
+  
+  # Tenta até 3 vezes se der erro 503 (overloaded)
+  max_retries = 3
+  retry_count = 0
+  
+  begin
     response = HTTParty.post(
       url,
       headers: { 'Content-Type' => 'application/json' },
@@ -70,9 +74,32 @@ class MovieAiService
       timeout: 30
     )
     
+    # Se der erro 503 (API sobrecarregada), tenta novamente
+    if response.code == 503 && retry_count < max_retries
+      retry_count += 1
+      Rails.logger.warn("⚠️ API sobrecarregada. Tentativa #{retry_count}/#{max_retries}. Aguardando 5 segundos...")
+      sleep(5)  # Aguarda 5 segundos
+      retry
+    end
+    
     unless response.success?
       raise "API retornou erro: #{response.code} - #{response.body}"
     end
+    
+    response.parsed_response
+    
+  rescue Net::ReadTimeout, Net::OpenTimeout => e
+    # Timeout na requisição
+    if retry_count < max_retries
+      retry_count += 1
+      Rails.logger.warn("⏱️ Timeout na requisição. Tentativa #{retry_count}/#{max_retries}...")
+      sleep(3)
+      retry
+    else
+      raise "Timeout após #{max_retries} tentativas: #{e.message}"
+    end
+  end
+end
     
     response.parsed_response
   end
