@@ -83,6 +83,10 @@ def fetch_ai_data
   
   begin
     result = MovieAiService.fetch_movie_data(title)
+
+    Rails.logger.info "========================================="
+    Rails.logger.info "RESULTADO DA IA: #{result.inspect}"
+    Rails.logger.info "========================================="
     
     # Verificar se houve erro relacionado a sobrecarga
     if result[:error]

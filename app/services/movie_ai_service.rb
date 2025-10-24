@@ -5,10 +5,16 @@ require 'httparty'
 class MovieAiService
   include HTTParty
   
-  API_KEY = ENV['GEMINI_API_KEY']
-  BASE_URI = "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent"
+  # Tenta pegar de ENV (produção), senão usa constante local
+  API_KEY = ENV['GEMINI_API_KEY'] || (defined?(GEMINI_API_KEY) ? GEMINI_API_KEY : nil)
+  BASE_URI = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 
   def self.fetch_movie_data(title)
+    # Validação da API Key
+    if API_KEY.nil? || API_KEY.empty?
+      return { error: 'API Key não configurada. Configure GEMINI_API_KEY.' }
+    end
+    
     # Validação básica
     return { error: 'Título não pode estar vazio' } if title.blank?
     
@@ -63,12 +69,16 @@ class MovieAiService
       }
     }
     
+    Rails.logger.info "🌐 Fazendo requisição para Gemini API..."
+    
     response = HTTParty.post(
       url,
       headers: { 'Content-Type' => 'application/json' },
       body: body.to_json,
       timeout: 30
     )
+    
+    Rails.logger.info "📥 Response code: #{response.code}"
     
     unless response.success?
       raise "API retornou erro: #{response.code} - #{response.body}"
