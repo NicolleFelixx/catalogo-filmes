@@ -168,7 +168,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     try {
       // Fazer requisição para a API
-      const response = await fetch(`/movies/search_ai?title=${encodeURIComponent(title)}`);
+      const response = await fetch('/movies/fetch_ai_data', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+  },
+  body: JSON.stringify({ title: title })
+});
       const data = await response.json();
       
       loadingDiv.style.display = 'none';
