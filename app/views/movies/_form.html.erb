@@ -118,7 +118,7 @@ function fetchMovieDataFromAI() {
   resultDiv.innerHTML = '';
   
   // Faz requisição
-  fetch(`/movies/<%= movie.persisted? ? movie.id : 'new' %>/fetch_ai_data`, {
+  fetch('/movies/fetch_ai_data', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
