@@ -1,0 +1,155 @@
+<%= form_with(model: movie, local: true, data: { turbo: false }) do |form| %>
+  <% if movie.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(movie.errors.count, "erro") %> encontrado:</h4>
+      <ul>
+        <% movie.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Busca com IA -->
+  <div class="card mb-4 border-primary">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">🤖 Buscar Informações com IA</h5>
+    </div>
+    <div class="card-body">
+      <p class="text-muted">Digite o título do filme e a IA preencherá automaticamente os dados!</p>
+      <div class="input-group">
+        <%= form.text_field :title, 
+            class: "form-control", 
+            placeholder: "Ex: Matrix, Avatar, Inception...",
+            id: "ai_search_title" %>
+        <button type="button" class="btn btn-primary" onclick="fetchMovieDataFromAI()">
+          🔍 Buscar na IA
+        </button>
+      </div>
+      <div id="ai-loading" class="mt-2" style="display: none;">
+        <div class="spinner-border spinner-border-sm text-primary" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+        <span class="ms-2 text-muted">Buscando informações... Aguarde ~10 segundos</span>
+      </div>
+      <div id="ai-result" class="mt-2"></div>
+    </div>
+  </div>
+
+  <!-- Formulário Principal -->
+  <div class="card">
+    <div class="card-body">
+      <div class="mb-3">
+        <%= form.label :title, "Título *", class: "form-label" %>
+        <%= form.text_field :title, class: "form-control", placeholder: "Nome do filme" %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :synopsis, "Sinopse *", class: "form-label" %>
+        <%= form.text_area :synopsis, class: "form-control", rows: 5, placeholder: "Descrição do filme" %>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <%= form.label :release_year, "Ano de Lançamento *", class: "form-label" %>
+          <%= form.number_field :release_year, class: "form-control", placeholder: "Ex: 1999" %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <%= form.label :duration, "Duração (minutos) *", class: "form-label" %>
+          <%= form.number_field :duration, class: "form-control", placeholder: "Ex: 136" %>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <%= form.label :director, "Diretor *", class: "form-label" %>
+          <%= form.text_field :director, class: "form-control", placeholder: "Nome do diretor" %>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :poster, "Poster do Filme", class: "form-label" %>
+        <%= form.file_field :poster, class: "form-control", accept: "image/*" %>
+        <% if movie.poster.attached? %>
+          <div class="mt-2">
+            <p class="text-muted">Poster atual:</p>
+            <%= image_tag movie.poster, class: "img-thumbnail", style: "max-width: 200px;" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mb-3">
+        <%= form.label :category_ids, "Categorias", class: "form-label" %>
+        <div class="row">
+          <% Category.all.each do |category| %>
+            <div class="col-md-3">
+              <div class="form-check">
+                <%= check_box_tag "movie[category_ids][]", category.id, 
+                    movie.categories.include?(category), 
+                    class: "form-check-input",
+                    id: "movie_category_#{category.id}" %>
+                <%= label_tag "movie_category_#{category.id}", category.name, class: "form-check-label" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <%= link_to "Cancelar", movies_path, class: "btn btn-secondary" %>
+        <%= form.submit "Salvar Filme", class: "btn btn-primary" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<script>
+function fetchMovieDataFromAI() {
+  const title = document.getElementById('ai_search_title').value.trim();
+  const loadingDiv = document.getElementById('ai-loading');
+  const resultDiv = document.getElementById('ai-result');
+  
+  if (!title) {
+    resultDiv.innerHTML = '<div class="alert alert-warning">Por favor, digite o título do filme.</div>';
+    return;
+  }
+  
+  // Mostra loading
+  loadingDiv.style.display = 'block';
+  resultDiv.innerHTML = '';
+  
+  // Faz requisição
+  fetch(`/movies/<%= movie.persisted? ? movie.id : 'new' %>/fetch_ai_data`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+    },
+    body: JSON.stringify({ title: title })
+  })
+  .then(response => response.json())
+  .then(data => {
+    loadingDiv.style.display = 'none';
+    
+    if (data.error) {
+      resultDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+    } else {
+      // Preenche os campos
+      document.getElementById('movie_synopsis').value = data.synopsis || '';
+      document.getElementById('movie_release_year').value = data.release_year || '';
+      document.getElementById('movie_duration').value = data.duration || '';
+      document.getElementById('movie_director').value = data.director || '';
+      
+      resultDiv.innerHTML = '<div class="alert alert-success">✅ Dados preenchidos com sucesso!</div>';
+      
+      setTimeout(() => {
+        resultDiv.innerHTML = '';
+      }, 3000);
+    }
+  })
+  .catch(error => {
+    loadingDiv.style.display = 'none';
+    resultDiv.innerHTML = '<div class="alert alert-danger">Erro ao buscar dados. Tente novamente.</div>';
+    console.error('Erro:', error);
+  });
+}
+</script>
