@@ -50,23 +50,19 @@ class MovieAiService
 
   def self.make_api_request(prompt)
     url = "#{BASE_URI}?key=#{API_KEY}"
-     body = {
-    contents: [{
-      parts: [{
-        text: prompt
-      }]
-    }],
-    generationConfig: {
-      temperature: 0.3,
-      maxOutputTokens: 1000
+    
+    body = {
+      contents: [{
+        parts: [{
+          text: prompt
+        }]
+      }],
+      generationConfig: {
+        temperature: 0.3,
+        maxOutputTokens: 1000
+      }
     }
-  }
-  
-  # Tenta até 3 vezes se der erro 503 (overloaded)
-  max_retries = 3
-  retry_count = 0
-  
-  begin
+    
     response = HTTParty.post(
       url,
       headers: { 'Content-Type' => 'application/json' },
@@ -74,32 +70,9 @@ class MovieAiService
       timeout: 30
     )
     
-    # Se der erro 503 (API sobrecarregada), tenta novamente
-    if response.code == 503 && retry_count < max_retries
-      retry_count += 1
-      Rails.logger.warn("⚠️ API sobrecarregada. Tentativa #{retry_count}/#{max_retries}. Aguardando 5 segundos...")
-      sleep(5)  # Aguarda 5 segundos
-      retry
-    end
-    
     unless response.success?
       raise "API retornou erro: #{response.code} - #{response.body}"
     end
-    
-    response.parsed_response
-    
-  rescue Net::ReadTimeout, Net::OpenTimeout => e
-    # Timeout na requisição
-    if retry_count < max_retries
-      retry_count += 1
-      Rails.logger.warn("⏱️ Timeout na requisição. Tentativa #{retry_count}/#{max_retries}...")
-      sleep(3)
-      retry
-    else
-      raise "Timeout após #{max_retries} tentativas: #{e.message}"
-    end
-  end
-end
     
     response.parsed_response
   end
@@ -112,13 +85,10 @@ end
     
     # Remove markdown code blocks e quebras de linha
     clean_text = text
-      .gsub(/```json\n?/, '')     # Remove ```json no início
-      .gsub(/```\n?/, '')          # Remove ``` no fim
-      .gsub(/\n/, ' ')             # Substitui quebras de linha por espaço
-      .strip                       # Remove espaços nas extremidades
-    
-    # Log para debug
-    Rails.logger.info("Texto limpo: #{clean_text[0..100]}...")
+      .gsub(/```json\n?/, '')
+      .gsub(/```\n?/, '')
+      .gsub(/\n/, ' ')
+      .strip
     
     # Converte JSON para hash
     data = JSON.parse(clean_text)
@@ -137,8 +107,6 @@ end
       { error: 'Dados incompletos retornados pela IA' }
     end
   rescue JSON::ParserError => e
-    Rails.logger.error("Erro ao parsear JSON: #{e.message}")
-    Rails.logger.error("Texto recebido: #{clean_text}")
     { error: "Erro ao processar resposta da IA. Tente novamente." }
   end
 end
