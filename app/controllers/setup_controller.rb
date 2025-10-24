@@ -1,7 +1,4 @@
 class SetupController < ApplicationController
-  # Pula autenticação para este controller
-  skip_before_action :authenticate_user!
-  
   def seed
     # Verifica se já tem filmes (para não rodar 2x)
     if Movie.count > 0
