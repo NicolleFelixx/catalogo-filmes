@@ -1,341 +1,184 @@
 # 🎬 Catálogo de Filmes
 
-Aplicação web desenvolvida em Ruby on Rails para gerenciamento de catálogo de filmes com autenticação de usuários, sistema de comentários e integração com IA.
+Aplicação web para gerenciamento de catálogo de filmes desenvolvida em Ruby on Rails.
 
-**Desafio Técnico - Mainô**
-
----
-
-## 🚀 Tecnologias Utilizadas
-
-- **Ruby** 3.4.0
-- **Rails** 7.1.5.2
-- **PostgreSQL** (banco de dados)
-- **Bootstrap** 5.3.0 (interface)
-- **Devise** (autenticação)
-- **Kaminari** (paginação)
-- **Active Storage** (upload de imagens)
-- **HTTParty** (requisições HTTP)
-- **Google Gemini AI** (preenchimento automático de dados)
+🌐 **[VER APLICAÇÃO AO VIVO](https://catalogo-filmes-1.onrender.com)**
 
 ---
 
-## ✨ Funcionalidades
+## 📋 Sobre o Projeto
 
-### 🌐 Área Pública (sem login)
+Sistema completo de catálogo de filmes com autenticação, comentários e integração com IA para busca automática de informações.
 
-- ✅ Listagem de filmes ordenados do mais novo para o mais antigo
-- ✅ Paginação com 6 filmes por página
-- ✅ Visualização completa dos detalhes do filme
-- ✅ Sistema de comentários anônimos
-- ✅ Comentários ordenados do mais recente para o mais antigo
-- ✅ Cadastro de novos usuários
-- ✅ Recuperação de senha
-- ✅ Busca por título, diretor ou ano
-- ✅ Filtro por categoria
+**Desenvolvido por:** Nicolle Felix  
+**Prazo:** 17/10/2025 a 26/10/2025  
+**Desafio:** Estágio Backend - Mainô
 
-### 🔐 Área Autenticada (com login)
+---
 
-- ✅ Logout
-- ✅ Cadastro de novos filmes
-- ✅ Edição de filmes (apenas do próprio usuário)
-- ✅ Exclusão de filmes (apenas do próprio usuário)
-- ✅ Comentários vinculados ao usuário automaticamente
+## ✨ Funcionalidades Implementadas
+
+### 🔹 Obrigatórias (15/15 - 100%)
+
+- ✅ Listagem de filmes ordenada (mais novo → mais antigo)
+- ✅ Paginação (6 filmes por página)
+- ✅ Visualização detalhada (título, sinopse, ano, duração, diretor)
+- ✅ Comentários anônimos (nome + conteúdo)
+- ✅ Comentários ordenados (mais recente → mais antigo)
+- ✅ Cadastro de usuários
+- ✅ Recuperação de senha (funcional via SendGrid)
+- ✅ Login/Logout
+- ✅ CRUD completo de filmes (autenticado)
+- ✅ Autorização (usuário só edita/apaga seus filmes)
+- ✅ Comentários autenticados (nome vinculado)
 - ✅ Edição de perfil
 - ✅ Alteração de senha
 
-### ⭐ Funcionalidades Opcionais Implementadas
+### 🔹 Opcionais (4/7 - 57%)
 
-- ✅ **Categorias de filmes** (many-to-many relationship)
-  - 12 categorias predefinidas (Ação, Comédia, Drama, etc)
-  - Filmes podem ter múltiplas categorias
-  - Badges coloridas por categoria
-  
-- ✅ **Busca avançada**
-  - Busca por título, diretor ou ano de lançamento
-  - Integrada com filtros de categoria
-  
-- ✅ **Filtros por categoria**
-  - Dropdown na navbar com contador de filmes
-  - Combinável com busca
-  
-- ✅ **Upload de imagem (poster)**
-  - Active Storage para gerenciamento
-  - Placeholder para filmes sem poster
-  - Visualização nos cards e página de detalhes
+- ✅ **Categorias** (many-to-many, múltiplas por filme)
+- ✅ **Busca** (por título, diretor e ano)
+- ✅ **Filtros** (por categoria)
+- ✅ **Upload de imagens** (Active Storage)
 
-### 🌟 Super Diferencial Implementado
+### 🔹 Super Diferenciais
 
-- ✅ **Busca e preenchimento automático com IA**
-  - Integração com Google Gemini AI
-  - Busca filme por título
-  - Preenche automaticamente: sinopse, ano, duração e diretor
-  - Sistema de retry (3 tentativas)
-  - Tratamento robusto de erros
-  - Fallback para preenchimento manual
+- ✅ **Integração com IA** (Google Gemini)
+  - Busca automática de informações de filmes
+  - Preenchimento de sinopse, ano, duração e diretor
+  - Tratamento de erros
 
 ---
 
-## 🛠️ Pré-requisitos
+## 🛠️ Stack Tecnológica
 
-Antes de começar, você precisa ter instalado:
-
-- Ruby 3.4.0 ou superior
-- Rails 7.1.5 ou superior
-- PostgreSQL 12 ou superior
-- Node.js (para gerenciamento de assets)
+- **Backend:** Ruby on Rails 7.1.5
+- **Banco de Dados:** PostgreSQL
+- **Frontend:** HTML, CSS (Bootstrap 5), JavaScript
+- **Autenticação:** Devise
+- **Upload de Arquivos:** Active Storage
+- **Paginação:** Kaminari
+- **IA:** Google Gemini API
+- **Email:** SendGrid
+- **Deploy:** Render
 
 ---
 
-## 📥 Instalação e Configuração
+## 🚀 Como Rodar Localmente
 
-### 1. Clone o repositório
+### Pré-requisitos
+- Ruby 3.4.7
+- PostgreSQL
+- Node.js
+
+### Instalação
 ```bash
+# Clone o repositório
 git clone https://github.com/NicolleFelixx/catalogo-filmes.git
 cd catalogo-filmes
-```
 
-### 2. Instale as dependências
-```bash
+# Instale as dependências
 bundle install
+
+# Configure o banco de dados
+rails db:create db:migrate db:seed
+
+# Configure variáveis de ambiente
+# Crie um arquivo .env com:
+# GEMINI_API_KEY=sua_chave_aqui
+# SENDGRID_API_KEY=sua_chave_aqui
+
+# Inicie o servidor
+rails s
 ```
 
-### 3. Configure o banco de dados
+Acesse: http://localhost:3000
 
-Edite o arquivo `config/database.yml` com suas credenciais do PostgreSQL.
-```bash
-rails db:create
-rails db:migrate
-rails db:seed
+---
+
+## 👤 Credenciais de Teste
+
+**Email:** admin@example.com  
+**Senha:** 123456
+
+---
+
+## 📧 Recuperação de Senha
+
+A funcionalidade de recuperação de senha está **implementada e funcional** via SendGrid.
+
+**Para testar:**
+1. Clique em "Esqueceu sua senha?" na página de login
+2. Digite um email de usuário cadastrado
+3. O email será enviado via SendGrid
+
+**Nota:** A funcionalidade está 100% implementada. Para receber o email de teste, cadastre-se com seu email real.
+
+---
+
+## 🎨 Funcionalidades da IA
+
+No formulário de cadastro de filmes:
+1. Digite o título do filme
+2. Clique em "🔍 Buscar na IA"
+3. Aguarde ~10 segundos
+4. Campos preenchidos automaticamente!
+
+**Filmes testados com sucesso:**
+- Matrix
+- Barbie
+- A Viagem de Chihiro
+- Vingadores
+
+---
+
+## 📂 Estrutura do Projeto
 ```
-
-### 4. Configure as variáveis de ambiente
-
-Crie um arquivo `config/initializers/gemini.rb` com sua API key do Google Gemini:
-```ruby
-GEMINI_API_KEY = 'SUA_API_KEY_AQUI'
-```
-
-**Como obter a API key:**
-1. Acesse [Google AI Studio](https://aistudio.google.com/)
-2. Crie uma nova API key
-3. Copie e cole no arquivo acima
-
-⚠️ **Importante:** Não commite este arquivo! Ele está no `.gitignore` para proteger sua chave.
-
-### 5. Inicie o servidor
-```bash
-rails server
-```
-
-Acesse: `http://localhost:3000`
-
----
-
-## 👥 Usuários de Teste
-
-O seed cria usuários de exemplo:
-```
-Email: admin@example.com
-Senha: 123456
-
-Email: user1@example.com
-Senha: 123456
-
-Email: user2@example.com
-Senha: 123456
-```
-
----
-
-## 🎨 Estrutura do Projeto
-```
-app/
-├── controllers/
-│   ├── application_controller.rb    # Carrega categorias globalmente
-│   ├── movies_controller.rb         # CRUD de filmes + busca + filtros
-│   └── comments_controller.rb       # Sistema de comentários
-├── models/
-│   ├── movie.rb                     # Model principal com validações
-│   ├── category.rb                  # Categorias de filmes
-│   ├── movie_category.rb            # Join table (many-to-many)
-│   ├── comment.rb                   # Comentários
-│   └── user.rb                      # Usuários (Devise)
-├── services/
-│   └── movie_ai_service.rb          # Integração com Google Gemini AI
-├── views/
-│   ├── movies/                      # Views de filmes
-│   ├── layouts/                     # Layout principal
-│   └── devise/                      # Views de autenticação
-└── helpers/
-    └── movies_helper.rb             # Helper para cores de categorias
-```
-
----
-
-## 🤖 Funcionalidade de IA
-
-A busca inteligente utiliza a API do Google Gemini para buscar informações sobre filmes.
-
-**Como usar:**
-1. Acesse "Novo Filme"
-2. Digite o título do filme no campo de busca IA
-3. Clique em "🔍 Buscar na IA"
-4. Aguarde ~10-15 segundos
-5. Os campos serão preenchidos automaticamente
-6. Revise e edite se necessário
-7. Salve o filme
-
-**Tratamento de erros:**
-- Retry automático (3 tentativas) em caso de falha
-- Timeout de 30 segundos por requisição
-- Mensagens amigáveis ao usuário
-- Fallback para preenchimento manual
-
----
-
-## 🗂️ Categorias
-
-12 categorias predefinidas:
-- Ação
-- Aventura
-- Comédia
-- Drama
-- Ficção Científica
-- Terror
-- Romance
-- Suspense
-- Animação
-- Documentário
-- Musical
-- Fantasia
-
-Cada filme pode ter múltiplas categorias associadas.
-
----
-
-## 🔍 Busca e Filtros
-
-**Busca:**
-- Campo de busca na navbar
-- Busca por: título, diretor ou ano
-- Case-insensitive
-
-**Filtros:**
-- Dropdown de categorias na navbar
-- Contador de filmes por categoria
-- Filtros combinam com busca
-- Badges visuais de filtros ativos
-
----
-
-## 📸 Upload de Imagens
-
-Utiliza Active Storage para gerenciamento de posters:
-- Formatos suportados: JPG, PNG, GIF
-- Tamanho máximo recomendado: 5MB
-- Placeholder automático para filmes sem poster
-
----
-
-## 🔒 Segurança e Autenticação
-
-- Autenticação via Devise
-- Autorização por usuário
-- Apenas o criador pode editar/excluir seus filmes
-- CSRF protection ativo
-- Senhas criptografadas com bcrypt
-
----
-
-## 📱 Responsividade
-
-Interface totalmente responsiva com Bootstrap:
-- Mobile-friendly
-- Navbar adaptativa
-- Grid system responsivo
-- Componentes otimizados para touch
-
----
-
-## 🚀 Deploy
-
-### Produção (Render)
-
-1. Crie uma conta no [Render](https://render.com)
-2. Crie um novo Web Service conectando ao repositório GitHub
-3. Configure as variáveis de ambiente:
-   - `DATABASE_URL` (Render cria automaticamente com PostgreSQL)
-   - `GEMINI_API_KEY` (sua chave da API)
-   - `RAILS_MASTER_KEY` (da pasta `config/master.key`)
-4. Build Command: `bundle install && rails db:migrate && rails db:seed`
-5. Start Command: `rails server -b 0.0.0.0`
-
----
-
-## 🧪 Testes
-
-Para rodar os testes (quando implementados):
-```bash
-rails test
+catalogo_filmes/
+├── app/
+│   ├── controllers/
+│   ├── models/
+│   ├── views/
+│   └── services/
+│       └── movie_ai_service.rb  # Integração com Gemini
+├── config/
+│   ├── routes.rb
+│   └── environments/
+├── db/
+│   ├── migrate/
+│   └── seeds.rb
+└── README.md
 ```
 
 ---
 
-## 📝 Funcionalidades Implementadas
+## 🎯 Diferenciais Técnicos
 
-### Obrigatórias ✅ (15/15 - 100%)
-- [x] Listagem ordenada de filmes
-- [x] Paginação (6 por página)
-- [x] Detalhes do filme
-- [x] Comentários anônimos
-- [x] Comentários ordenados
-- [x] Cadastro de usuário
-- [x] Recuperação de senha
-- [x] Logout
-- [x] CRUD de filmes
-- [x] Autorização por usuário
-- [x] Comentários com usuário vinculado
-- [x] Editar perfil
-- [x] Alterar senha
-
-### Opcionais ✅ (4/7 - 57%)
-- [x] Categorias de filmes
-- [x] Busca por título, diretor e ano
-- [x] Filtros por categoria
-- [x] Upload de imagem (poster)
-- [ ] Tags
-- [ ] I18n (PT/EN)
-- [ ] Testes automatizados
-
-### Super Diferenciais ✅ (1/2 - 50%)
-- [x] IA para buscar e preencher dados do filme
-- [ ] Importação em massa via CSV + Sidekiq
+- ✅ Código limpo e organizado
+- ✅ Service Objects (MovieAiService)
+- ✅ Relacionamentos N:N implementados
+- ✅ Validações robustas
+- ✅ Tratamento de erros
+- ✅ Seeds com dados realistas
+- ✅ Interface responsiva
+- ✅ Commits organizados
 
 ---
 
-## 👨‍💻 Desenvolvido por
+## 📸 Screenshots
 
-**Nicolle Felix**
-
-- GitHub: [@NicolleFelixx](https://github.com/NicolleFelixx)
-- LinkedIn: [https://www.linkedin.com/in/nicolle-felix-4ab62b2aa/]
-- Email: [nicolle.felix2002@gmail.com]
-
----
-
-## 📄 Licença
-
-Este projeto foi desenvolvido como parte do Desafio Técnico da Mainô.
+- Listagem de filmes com paginação ✅
+- Busca com IA funcionando ✅
+- Sistema de categorias ✅
+- Upload de posters ✅
 
 ---
 
-## 🙏 Agradecimentos
+## 📞 Contato
 
-- Mainô pela oportunidade do desafio
-- Google Gemini AI pela API
-- Comunidade Rails pelo suporte
+**Nicolle Felix**  
+GitHub: [github.com/NicolleFelixx](https://github.com/NicolleFelixx)
 
 ---
 
-**Desenvolvido com ❤️ usando Ruby on Rails**
+**Desenvolvido com ❤️ para o Desafio Técnico Mainô**
