@@ -73,6 +73,20 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+# SendGrid Email Configuration - Production
+config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
+config.action_mailer.perform_deliveries = true
+config.action_mailer.raise_delivery_errors = true
+config.action_mailer.delivery_method = :smtp
+config.action_mailer.smtp_settings = {
+  user_name: 'apikey',
+  password: ENV['SENDGRID_API_KEY'],
+  address: 'smtp.sendgrid.net',
+  port: 587,
+  authentication: :plain,
+  enable_starttls_auto: true
+}
+
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false

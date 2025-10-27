@@ -41,3 +41,6 @@
 
 # Ignorar arquivo com API keys
 /config/initializers/gemini.rb
+
+# Environment variables
+.env
